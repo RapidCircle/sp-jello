@@ -1,8 +1,6 @@
-'use strict';
-
 var gulp = require('gulp');
 var minify = require('gulp-minify');
-var pkg =  require('./package.json')
+var pkg =  require('./package.json');
 gulp.task('compress', function() {
   gulp.src('lib/*.js')
     .pipe(minify({
@@ -13,7 +11,7 @@ gulp.task('compress', function() {
         exclude: [],
         ignoreFiles: ['-min.js']
     }))
-    .pipe(gulp.dest('bin'))
+    .pipe(gulp.dest('bin'));
 });
 
-gulp.task('default', ['compress'])
+gulp.task('default', ['compress']);
