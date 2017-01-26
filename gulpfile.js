@@ -1,8 +1,10 @@
 var gulp = require('gulp');
 var minify = require('gulp-minify');
+var concat = require('gulp-concat');
 var pkg =  require('./package.json');
 gulp.task('compress', function() {
-  gulp.src('lib/*.js')
+  gulp.src(['lib/jello.js','lib/jello.*.js'])
+    .pipe(concat('jello.js'))
     .pipe(minify({
         ext:{
             src: '-' + pkg.version + '.js',
