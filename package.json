@@ -28,7 +28,10 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
-    "gulp-minify": "0.0.14"
+    "gulp-jasmine": "^2.4.2",
+    "gulp-minify": "0.0.14",
+    "gulp-notify": "^3.0.0",
+    "jsdom": "^10.0.0"
   },
   "dependencies": {
     "jquery": "^3.1.1"

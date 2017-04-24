@@ -4,6 +4,33 @@ var Jello = (function() {
 
 //module.exports = Jello;
 
+Jello.Constants = function () {
+  var List = {
+    Template : {
+      "GenericList" : 100,
+      "DocumentLibrary" : 101,
+      "Survey" : 102,
+      "Links" : 103,
+      "Announcements" : 104,
+      "Contacts" : 105,
+      "Events" : 106,
+      "Tasks" : 107,
+      "DiscussionBoard" : 108,
+      "PictureLibrary" : 109
+    }
+  };
+  var Web = {
+    Template : {
+      "TeamSite" : 0,
+      "BlankSite" : 1
+    }
+  };
+  return {
+    List : List,
+    Web : Web
+  };
+}();
+
 Jello.Files = function() {
     var _private = (function() {
         var _requestDigest = null;
@@ -23,7 +50,7 @@ Jello.Files = function() {
                         _requestDigest = resp.d.GetContextWebInformation;
                         _requestDigest.expiresOn = now + (resp.d.GetContextWebInformation.FormDigestTimeoutSeconds * 1000) - 60000; // -60000 To prevent any calls to fail at all, by refreshing a minute before
                         // console.log("Token", self.requestDigest.FormDigestValue);
-                        dfd.resolve(_requestDigest);
+                        dfd.resolve(_requestDigest.FormDigestValue);
                     })
                     .fail(function(err) {
                         console.log("Error fetching Request Digest. Some parts won't work.");
@@ -287,14 +314,76 @@ Jello.Files = function() {
     };
 };
 
-Jello.List = function () {
-  var _private = (function () {
-    return{
+Jello.List = function(options) {
+    var _private = (function() {
+        var _requestDigest = null;
+        var GetRequestDigest = function() {
+            var dfd = $.Deferred();
+            if (_requestDigest && _requestDigest.expiresOn > (new Date())) {
+                return dfd.resolve(_requestDigest);
+            } else {
+                $.ajax({
+                        type: "POST",
+                        url: siteUrl + "/_api/contextinfo",
+                        headers: {
+                            "accept": "application/json;odata=verbose"
+                        }
+                    }).done(function(resp) {
+                        var now = (new Date()).getTime();
+                        _requestDigest = resp.d.GetContextWebInformation;
+                        _requestDigest.expiresOn = now + (resp.d.GetContextWebInformation.FormDigestTimeoutSeconds * 1000) - 60000; // -60000 To prevent any calls to fail at all, by refreshing a minute before
+                        // console.log("Token", self.requestDigest.FormDigestValue);
+                        dfd.resolve(_requestDigest.FormDigestValue);
+                    })
+                    .fail(function(err) {
+                        console.log("Error fetching Request Digest. Some parts won't work.");
+                        dfd.reject(err);
+                    });
+            }
+            return dfd.promise();
+        };
+        return {
+            GetRequestDigest: GetRequestDigest
+        };
+    })();
 
+    var siteUrl = options.site;
+
+    var add = function(opt) {
+        var dfd = $.Deferred();
+        _private.GetRequestDigest().then(function(requestDigest) {
+            $.ajax({
+                url: siteUrl + "/_api/web/lists",
+                type: "POST",
+                headers: {
+                    "accept": "application/json;odata=verbose",
+                    "content-type": "application/json;odata=verbose",
+                    "X-RequestDigest": requestDigest
+                },
+                data: JSON.stringify({
+                    '__metadata': {
+                        'type': 'SP.List'
+                    },
+                    'AllowContentTypes': opt.AllowContentTypes,
+                    'BaseTemplate': opt.BaseTemplate,
+                    'ContentTypesEnabled': opt.ContentTypesEnabled,
+                    'Description': opt.Description,
+                    'Title': opt.Title
+                })
+            }).done(function(resp) {
+                dfd.resolve(resp);
+            }).fail(function(err) {
+                dfd.reject(err);
+            });
+        }, function(err) {
+            dfd.reject(err);
+        });
+
+        return dfd.promise();
     };
-  })();
-
-  throw ("Not implemented");
+    return {
+        add: add
+    };
 };
 
 Jello.ListItems = (function(options) {
@@ -316,7 +405,7 @@ Jello.ListItems = (function(options) {
                       _requestDigest = resp.d.GetContextWebInformation;
                       _requestDigest.expiresOn = now + (resp.d.GetContextWebInformation.FormDigestTimeoutSeconds * 1000) - 60000; // -60000 To prevent any calls to fail at all, by refreshing a minute before
                       // console.log("Token", self.requestDigest.FormDigestValue);
-                      dfd.resolve(_requestDigest);
+                      dfd.resolve(_requestDigest.FormDigestValue);
                   })
                   .fail(function(err) {
                       console.log("Error fetching Request Digest. Some parts won't work.");
@@ -694,12 +783,78 @@ Jello.Taxonomy = function(options) {
     };
 };
 
-Jello.Web = function () {
-  var _private = (function () {
-    return{
+Jello.Web = function(options) {
+    var _private = (function() {
+        var _requestDigest = null;
+        var GetRequestDigest = function() {
+            var dfd = $.Deferred();
+            if (_requestDigest && _requestDigest.expiresOn > (new Date())) {
+                return dfd.resolve(_requestDigest);
+            } else {
+                $.ajax({
+                        type: "POST",
+                        url: siteUrl + "/_api/contextinfo",
+                        headers: {
+                            "accept": "application/json;odata=verbose"
+                        }
+                    }).done(function(resp) {
+                        var now = (new Date()).getTime();
+                        _requestDigest = resp.d.GetContextWebInformation;
+                        _requestDigest.expiresOn = now + (resp.d.GetContextWebInformation.FormDigestTimeoutSeconds * 1000) - 60000; // -60000 To prevent any calls to fail at all, by refreshing a minute before
+                        // console.log("Token", self.requestDigest.FormDigestValue);
+                        dfd.resolve(_requestDigest.FormDigestValue);
+                    })
+                    .fail(function(err) {
+                        console.log("Error fetching Request Digest. Some parts won't work.");
+                        dfd.reject(err);
+                    });
+            }
+            return dfd.promise();
+        };
+        return {
+            GetRequestDigest: GetRequestDigest
+        };
+    })();
 
+    var siteUrl = options.site;
+
+    var add = function(opt) {
+        var dfd = $.Deferred();
+        _private.GetRequestDigest().then(function(requestDigest) {
+            console.log(requestDigest);
+            $.ajax({
+                url: siteUrl + "/_api/web/webinfos/add",
+                type: "POST",
+                headers: {
+                    "accept": "application/json;odata=verbose",
+                    "content-type": "application/json;odata=verbose",
+                    "X-RequestDigest": requestDigest
+                },
+                data: JSON.stringify({
+                    'parameters': {
+                        '__metadata': {
+                            'type': 'SP.WebInfoCreationInformation'
+                        },
+                        'Url': opt.siteUrl,
+                        'Title': opt.siteName,
+                        'Description': opt.siteDescription,
+                        'Language': opt.Language,
+                        'WebTemplate': opt.siteTemplate,
+                        'UseUniquePermissions': opt.uniquePermissions
+                    }
+                })
+            }).done(function(resp) {
+                dfd.resolve(resp);
+            }).fail(function(err) {
+                dfd.reject(err);
+            });
+        }, function(err) {
+            dfd.reject(err);
+        });
+        return dfd.promise();
     };
-  })();
 
-  throw ("Not implemented");
+    return {
+        add: add
+    };
 };
