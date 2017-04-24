@@ -22,9 +22,9 @@
   "author": "Omkar Khair",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/omkarkhair/sp-jello/issues"
+    "url": "https://github.com/rapidcircle/sp-jello/issues"
   },
-  "homepage": "https://github.com/omkarkhair/sp-jello#readme",
+  "homepage": "https://github.com/rapidcircle/sp-jello#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
