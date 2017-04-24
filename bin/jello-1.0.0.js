@@ -4,31 +4,36 @@ var Jello = (function() {
 
 //module.exports = Jello;
 
-Jello.Constants = function () {
-  var List = {
-    Template : {
-      "GenericList" : 100,
-      "DocumentLibrary" : 101,
-      "Survey" : 102,
-      "Links" : 103,
-      "Announcements" : 104,
-      "Contacts" : 105,
-      "Events" : 106,
-      "Tasks" : 107,
-      "DiscussionBoard" : 108,
-      "PictureLibrary" : 109
-    }
-  };
-  var Web = {
-    Template : {
-      "TeamSite" : 0,
-      "BlankSite" : 1
-    }
-  };
-  return {
-    List : List,
-    Web : Web
-  };
+Jello.Constants = function() {
+    var List = {
+        Template: {
+            "GenericList": 100,
+            "DocumentLibrary": 101,
+            "Survey": 102,
+            "Links": 103,
+            "Announcements": 104,
+            "Contacts": 105,
+            "Events": 106,
+            "Tasks": 107,
+            "DiscussionBoard": 108,
+            "PictureLibrary": 109
+        }
+    };
+    var Web = {
+        Template: {
+            "TeamSite": 0,
+            "BlankSite": 1
+        }
+    };
+    var Language = {
+        English: 1033,
+        Dutch: 1043
+    };
+    return {
+        List: List,
+        Web: Web,
+        Language: Language
+    };
 }();
 
 Jello.Files = function() {
@@ -332,7 +337,6 @@ Jello.List = function(options) {
                         var now = (new Date()).getTime();
                         _requestDigest = resp.d.GetContextWebInformation;
                         _requestDigest.expiresOn = now + (resp.d.GetContextWebInformation.FormDigestTimeoutSeconds * 1000) - 60000; // -60000 To prevent any calls to fail at all, by refreshing a minute before
-                        // console.log("Token", self.requestDigest.FormDigestValue);
                         dfd.resolve(_requestDigest.FormDigestValue);
                     })
                     .fail(function(err) {
@@ -821,7 +825,6 @@ Jello.Web = function(options) {
     var add = function(opt) {
         var dfd = $.Deferred();
         _private.GetRequestDigest().then(function(requestDigest) {
-            console.log(requestDigest);
             $.ajax({
                 url: siteUrl + "/_api/web/webinfos/add",
                 type: "POST",
