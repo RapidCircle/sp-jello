@@ -204,7 +204,7 @@ For OData query reference, check <https://msdn.microsoft.com/en-us/library/offic
 To perform Operations on the term store you need to provide the terms store name as an initialization parameter for `Jello.Taxonomy`. The returned Jello object can then be used to perform further operations on the term store.
 
 ```javascript
-var Taxonomy = Jelllo.Taxonomy({
+var Taxonomy = Jello.Taxonomy({
     TermStore: "Taxonomy_14JlqlrzpVZ5lhPOPq0MnA=="
 });
 `
@@ -300,6 +300,66 @@ Taxonomy.addTerm({
     .fail(function (err) {
       console.error(err)
     });
+```
+
+# Perform Operations On Web
+To perform operations on the web you need to provide the site to `Jello.Web`. The returned object can then be used to perform further operations on the web.
+
+```javascript
+var JelloWeb = Jello.Web({site: "https://contoso.sharepoint.com/sites/mysite"})
+```
+
+## Add a subsite
+### accepts
+
+`siteUrl` : The url of the subsite. `siteName` : The name of subsite `siteDescription` : The description for the subsite. `siteTemplate` : The template to use. For example `sts`. `Language` : The language to use for the subsite. Refer to `Jello.Constants` for a list of possible languages. `uniquePermissions` : A boolean representing if the site uses unique permissions.
+
+### returns
+jQuery promise object
+
+```javascript
+JelloWeb.add({
+  siteUrl: "mysite",
+  siteName: "My Site's Name",
+  siteDescription: "This is the description that explains how to use this site.",
+  siteTemplate: "sts",
+  Language : Jello.Constants.Language.English,
+  uniquePermissions: false
+}).then(
+  function(resp){
+      console.log(resp)
+  },
+  function(err){
+    console.error(err)
+})
+```
+
+# Perform Operations On Lists
+To perform operations on the list you need to provide the site to `Jello.List`. The returned object can then be used to perform further operations on the list.
+```javascript
+var JelloList = Jello.List({site: "https://contoso.sharepoint.com/sites/mysite"})
+```
+## Add a list
+### accepts
+`AllowContentTypes` : A boolean value to indicate if content types are allowed on the list. `BaseTemplate` : The template to use to create this list. For a list of possible values refer to `Jello.Constatns.Lists`. `ContentTypesEnabled`: A boolean to indicate if content type management is enabled. `Description` : The description of the list. `Title` : The title of the list.
+
+### returns
+jQuery promise object
+
+```javascript
+JelloList.add({
+  AllowContentTypes : true,
+  BaseTemplate : Jello.Constants.List.Template.Tasks,
+  ContentTypesEnabled: true,
+  Description : "This is the description",
+  Title : "My Task List"
+}).then(
+  function(resp){
+    console.log(resp)
+  },
+  function(err){
+    console.error(err)
+})
 ```
 #### Note
 This code is available to you as is without any warranties. It can do wonders, or shatter your dreams to pieces. The developers take no liability.
