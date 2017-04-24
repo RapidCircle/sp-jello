@@ -1,8 +1,8 @@
 {
   "name": "sp-jello",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "REST Api library for SharePoint",
-  "main": "bin/jello-1.0.0.min.js",
+  "main": "bin/jello-1.0.1.min.js",
   "directories": {
     "doc": "doc"
   },
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/omkarkhair/sp-jello"
+    "url": "git+https://github.com/rapidcircle/sp-jello"
   },
   "keywords": [
     "SharePoint",
